@@ -1,7 +1,7 @@
 with open('inputs/input01.txt', 'r') as input_file:
-    val = input_file.read().split('\n'*2)
+    all_calories = input_file.read().split('\n'*2)
 
-calories = [sum(map(int, line.split('\n'))) for line in val]
+calories = [sum(map(int, line.split('\n'))) for line in all_calories]
 
 # PART 1
 print('Part 1 Answer - ', end='')
