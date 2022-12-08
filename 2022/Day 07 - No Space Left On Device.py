@@ -12,23 +12,14 @@ def cwd():
 for command, output in console:
     if command[:2] == 'cd':
         ndir = command.split()[1]
-        if ndir == '..':
-            cdir = cdir[:cdir.rfind('/')]
-        elif ndir == '/':
-            cdir = ''
-        else:
-            cdir += f'/{ndir}'
+        cdir = {"..":cdir[:cdir.rfind('/')],'/':''}.get(ndir,f'{cdir}/{ndir}')
         continue
-    output = re.findall(r'(.*) (.*)\n?', output)
+    output, wd = re.findall(r'(.*) (.*)\n?', output), dirs[cwd()]
     for size, file in output:
-        dirs[cwd()][file] = f'{cdir}/{file}' if size == 'dir' else int(size)
+        wd[file] = f'{cdir}/{file}' if size == 'dir' else int(size)
 
 def get_size(path):
-    total_size = 0
-    for filesize in dirs[path].values():
-        if isinstance(filesize, str):
-            filesize = get_size(filesize)
-        total_size += filesize
+    total_size = sum({str:get_size(s)}.get(type(s),s) for s in dirs[path].values())
     dirsz[path] = total_size
     return total_size
 
